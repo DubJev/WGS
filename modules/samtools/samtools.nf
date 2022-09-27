@@ -1,24 +1,46 @@
 #!/usr/bin/env nextflow
-
-params.viewOutput = "tests/samtools/outputs"
-params.refBam = "example.bam"
-
-Channel.value("$workflow.launchDir/tests/samtools/inputs/$params.refBam").set { ch_bam }
+nextflow.enable.dsl = 2
 
 process samView {
 
-  publishDir params.viewOutput, mode: 'copy'
-  container 'djevtic/samtools'
+  publishDir params.viewOutputs, mode: 'copy'
   
   input:
-    path refBam from ch_bam
+    path ch_bam
   output:
-    path "alignmentsBam" into ch_out_view
-    path "headerBam" into ch_out_headerview
-
-  """
-  samtools view $params.refBam > alignmentsBam
-  samtools view -H $params.refBam > headerBam
-  """
+    path alignmentsBam
+    path headerBam
+    path "samtools_version.yml", emit: version
+  script:
+    """
+    samtools view ${ch_bam} > alignmentsBam
+    samtools view -H ${ch_bam} > headerBam
+   
+    export SAMTOOLS_VER=\$(samtools --version 2>&1 |  sed -n -e '1p' | grep -Eo [0-9][.]*[0-9]*)
+    echo samtools: \$SAMTOOLS_VER > samtools_version.yml
+    """
 }
 
+workflow.onComplete{
+    println "Status: ${ workflow.success ? 'OK' : 'failed' }"
+    println """Completed at: $workflow.complete
+               Duration: $workflow.duration
+               WorkDir:  $workflow.workDir
+             """
+}
+
+workflow.onError{
+    println "Stopped: ${workflow.errorMessage}"
+}
+
+workflow viewSam {
+  take:
+    ch_bam
+  main:
+    samView(ch_bam)
+}
+
+workflow {
+  ch_bam = Channel.fromPath(params.bams)
+  viewSam(ch_bam)
+}

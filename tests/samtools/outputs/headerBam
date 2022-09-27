@@ -5,4 +5,4 @@
 @SQ	SN:5	LN:26975502
 @SQ	SN:M	LN:366924
 @SQ	SN:C	LN:154478
-@PG	ID:samtools	PN:samtools	VN:1.16.1-21-gede7603	CL:samtools view -H example.bam
+@PG	ID:samtools	PN:samtools	VN:1.13	CL:samtools view -H example.bam
