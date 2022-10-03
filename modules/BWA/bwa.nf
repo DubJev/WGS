@@ -1,20 +1,6 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
-process indexFiles {
-  
-  publishDir params.indexOutputs, mode: 'copy'
-  
-  input:
-    path ch_fasta
-  output:
-    path "example.fasta.*"
-  script:
-    """
-    bwa index ${ch_fasta}
-    """
-}
-
 process alignFiles {
 
   publishDir params.alignOutputs, mode: 'copy'
@@ -24,21 +10,15 @@ process alignFiles {
     path ch_fastq1
     path ch_fastq2
   output:
-    path "aligned.sam"
+    path "aligned.bam"
   script:
     """
-    bwa mem ${ch_fasta} ${ch_fastq1} ${ch_fastq2} > aligned.sam
+    bwa index ${ch_fasta} 
+    bwa mem -M ${ch_fasta} ${ch_fastq1} ${ch_fastq2} > aligned.bam
     """
 }
 
-workflow makeFai {
-  take:
-    ch_fasta
-  main:
-    indexFiles(ch_fasta)
-}
-
-workflow makeSam {
+workflow alignFiles_wf {
   take:
     ch_fasta
     ch_fastq1
@@ -51,6 +31,5 @@ workflow {
   ch_fasta = Channel.fromPath(params.fastas)
   ch_fastq1 = Channel.fromPath(params.fastq1)
   ch_fastq2 = Channel.fromPath(params.fastq2)
-  makeFai(ch_fasta)
-//  makeSam(ch_fasta, ch_fastq1, ch_fastq2)
+  alignFiles_wf(ch_fasta, ch_fastq1, ch_fastq2)
 }
