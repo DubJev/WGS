@@ -44,7 +44,8 @@ process deDuplicate {
     path "${sample_name}_dMetrics.txt"
   script:
     """
-    gatk MarkDuplicates -I ${ch_bam} -M ${sample_name}_dMetrics.txt -O ${sample_name}_deduplicate.bam
+    gatk AddOrReplaceReadGroups I=${ch_bam} O=output.bam RGLB=lib1 RGPL=ILLUMINA RGPU=50 RGSM=TAAGGCGA
+    gatk MarkDuplicates -I output.bam -M ${sample_name}_dMetrics.txt -O ${sample_name}_deduplicate.bam
     """
 }
 
@@ -64,10 +65,8 @@ process reCalibrate {
     samtools faidx ${ch_fasta}
     gatk CreateSequenceDictionary R=${ch_fasta}
     gatk IndexFeatureFile -I ${ch_vcfs}
-    gatk AddOrReplaceReadGroups I=${de_bam} O=output.bam RGLB=lib1 RGPL=ILLUMINA RGPU=unit1 RGSM=20
-    gatk BaseRecalibrator -I output.bam -R ${ch_fasta} --known-sites ${ch_vcfs} -O reTabela.table 
+    gatk BaseRecalibrator -I ${de_bam} -R ${ch_fasta} --known-sites ${ch_vcfs} -O reTabela.table 
     gatk ApplyBQSR -R ${ch_fasta} -I ${de_bam} --bqsr-recal-file reTabela.table -O ${sample_name}_recalibrated.bam
-
     """
 }
 
@@ -118,4 +117,5 @@ workflow {
   extractChr20_wf(alignFiles_wf.out)
   deDuplicate_wf(extractChr20_wf.out)
   reCalibrate_wf(deDuplicate_wf.out, ch_fasta, ch_vcfs)
+  
 }
