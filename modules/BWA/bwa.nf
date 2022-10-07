@@ -10,11 +10,26 @@ process alignFiles {
     path ch_fasta
     tuple val(sample_name), path(reads)
   output:
-    tuple val(sample_name), path("${sample_name}_aligned.bam") , emit: alignedBam
+    tuple val(sample_name), path("${sample_name}_aligned.bam"), emit: alignedBam
   script:
     """
     bwa index ${ch_fasta}
     bwa mem -M ${ch_fasta} ${reads} | samtools sort > ${sample_name}_aligned.bam
+    """
+}
+
+process extractChr20 {
+
+  publishDir params.alignOutputs, mode: 'copy'
+
+  input:
+    tuple val(sample_name), path(largeBam)
+  output:
+    tuple val(sample_name), path("${sample_name}_aligned_chr20.bam"), emit: alignedChr20Bam
+  script:
+    """
+    samtools index ${largeBam}
+    samtools view -h ${largeBam} 20 > ${sample_name}_aligned_chr20.bam
     """
 }
 
@@ -66,6 +81,15 @@ workflow alignFiles_wf {
     alignedBam = alignFiles.out.alignedBam
 }
 
+workflow extractChr20_wf {
+  take:
+    ch_bam
+  main:
+    extractChr20(ch_bam)
+  emit:
+    alignedChr20Bam = extractChr20.out.alignedChr20Bam
+}
+
 workflow deDuplicate_wf {
   take:
     ch_bam
@@ -91,6 +115,7 @@ workflow {
   ch_fastqs = Channel.fromFilePairs(params.alignInputs+"*_{1,2}.fastq")
   ch_vcfs = Channel.fromPath(params.alignInputs+"*.vcf.gz")
   alignFiles_wf(ch_fasta, ch_fastqs)
-  deDuplicate_wf(alignFiles_wf.out)
+  extractChr20_wf(alignFiles_wf.out)
+  deDuplicate_wf(extractChr20_wf.out)
   reCalibrate_wf(deDuplicate_wf.out, ch_fasta, ch_vcfs)
 }
