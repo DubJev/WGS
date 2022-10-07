@@ -8,17 +8,8 @@ WORKDIR /usr/src/app
 COPY . .
 
 # install dependencies
-RUN apt-get update
-RUN apt-get install -yqq autoconf automake make gcc perl 
-RUN apt-get install -yqq zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev
-RUN apt-get install -yqq git
-RUN git clone https://github.com/samtools/samtools
-RUN cd samtools
-RUN apt install -yqq samtools
-RUN cd ..
-RUN git clone https://github.com/lh3/bwa.git
-RUN cd bwa
-RUN apt install -yqq bwa
+RUN apt-get update && \
+    apt-get install -yqq samtools bwa
 
 # specify the port number that needs to be exposed
 EXPOSE 5000
