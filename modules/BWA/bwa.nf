@@ -11,10 +11,17 @@ process alignFiles {
     tuple val(sample_name), path(reads)
   output:
     tuple val(sample_name), path("${sample_name}_aligned.bam"), emit: alignedBam
+    path "version.yml"
   script:
     """
     bwa index ${ch_fasta}
     bwa mem -M ${ch_fasta} ${reads} | samtools sort > ${sample_name}_aligned.bam
+
+    BWA_VER="bwa: "\$(echo \$(bwa 2>&1) | sed -n -e '1p' | grep -Eo [0-9][.]*[0-9]*-[A-Za-z]+[0-9]*)
+    echo \$BWA_VER > bwa_version.yml
+    SAMTOOLS_VER=\$(samtools --version 2>&1 |  sed -n -e '1p' | grep -Eo [0-9][.]*[0-9]*)
+    echo samtools: \$SAMTOOLS_VER > samtools_version.yml
+    cat samtools_version.yml bwa_version.yml > version.yml
     """
 }
 
@@ -68,6 +75,18 @@ process reCalibrate {
     gatk BaseRecalibrator -I ${de_bam} -R ${ch_fasta} --known-sites ${ch_vcfs} -O reTabela.table 
     gatk ApplyBQSR -R ${ch_fasta} -I ${de_bam} --bqsr-recal-file reTabela.table -O ${sample_name}_recalibrated.bam
     """
+}
+
+workflow.onComplete{
+    println "Status: ${ workflow.success ? 'OK' : 'failed' }"
+    println """Completed at: $workflow.complete
+               Duration: $workflow.duration
+               WorkDir:  $workflow.workDir
+             """
+}
+
+workflow.onError{
+    println "Stopped: ${workflow.errorMessage}"
 }
 
 workflow alignFiles_wf {
