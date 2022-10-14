@@ -3,6 +3,7 @@ nextflow.enable.dsl = 2
 
 process alignFiles {
 
+  label "bwa"
   tag "${sample_name}"
   publishDir params.alignOutputs, mode: 'copy'
   
@@ -11,22 +12,33 @@ process alignFiles {
     tuple val(sample_name), path(reads)
   output:
     tuple val(sample_name), path("${sample_name}_aligned.bam"), emit: alignedBam
-    path "version.yml"
   script:
     """
     bwa index ${ch_fasta}
     bwa mem -M ${ch_fasta} ${reads} | samtools sort > ${sample_name}_aligned.bam
+    """
+}
+process VersionBWASam {
 
+  label "bwa"
+  publishDir params.verOutputs, mode: 'copy'
+  
+  input:
+  output:
+    path "bwa_version.yml"
+    path "samtools_version.yml"
+  script:
+    """
     BWA_VER="bwa: "\$(echo \$(bwa 2>&1) | sed -n -e '1p' | grep -Eo [0-9][.]*[0-9]*-[A-Za-z]+[0-9]*)
     echo \$BWA_VER > bwa_version.yml
     SAMTOOLS_VER=\$(samtools --version 2>&1 |  sed -n -e '1p' | grep -Eo [0-9][.]*[0-9]*)
     echo samtools: \$SAMTOOLS_VER > samtools_version.yml
-    cat samtools_version.yml bwa_version.yml > version.yml
     """
 }
 
 process extractChr20 {
 
+  label "bwa"
   publishDir params.alignOutputs, mode: 'copy'
 
   input:
@@ -42,6 +54,7 @@ process extractChr20 {
 
 process deDuplicate {
 
+  label "gatk"
   publishDir params.alignOutputs, mode: 'copy'
   
   input:
@@ -58,6 +71,7 @@ process deDuplicate {
 
 process reCalibrate {
 
+  label "gatk"
   publishDir params.alignOutputs, mode: 'copy'
 
   input:
@@ -65,7 +79,7 @@ process reCalibrate {
     path ch_fasta
     path ch_vcfs
   output:
-    path "${sample_name}_recalibrated.bam"
+    tuple val(sample_name), path("${sample_name}_recalibrated.bam"), emit:recalibrate
     
   script:
     """
@@ -75,14 +89,6 @@ process reCalibrate {
     gatk BaseRecalibrator -I ${de_bam} -R ${ch_fasta} --known-sites ${ch_vcfs} -O reTabela.table 
     gatk ApplyBQSR -R ${ch_fasta} -I ${de_bam} --bqsr-recal-file reTabela.table -O ${sample_name}_recalibrated.bam
     """
-}
-
-workflow.onComplete{
-    println "Status: ${ workflow.success ? 'OK' : 'failed' }"
-    println """Completed at: $workflow.complete
-               Duration: $workflow.duration
-               WorkDir:  $workflow.workDir
-             """
 }
 
 workflow.onError{
@@ -125,6 +131,14 @@ workflow reCalibrate_wf {
     ch_vcfs
   main:
     reCalibrate(de_bam, ch_fasta, ch_vcfs)
+  emit:
+    recalibrate = reCalibrate.out.recalibrate
+
+}
+
+workflow Version_wf {
+  main:
+    VersionBWASam()
 
 }
 
@@ -136,5 +150,5 @@ workflow {
   extractChr20_wf(alignFiles_wf.out)
   deDuplicate_wf(extractChr20_wf.out)
   reCalibrate_wf(deDuplicate_wf.out, ch_fasta, ch_vcfs)
-  
+  Version_wf()
 }

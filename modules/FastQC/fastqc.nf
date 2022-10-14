@@ -3,6 +3,7 @@ nextflow.enable.dsl = 2
 
 process checkQ {
 
+  label "bwa"
   publishDir params.qcOutputs, mode: 'copy'
   
   input:
@@ -17,7 +18,8 @@ process checkQ {
 
 process checkVersion {
 
-  publishDir params.qcOutputs, mode: 'copy'
+  label "bwa"
+  publishDir params.verOutputs, mode: 'copy'
   output:
     path "fastqc_version.yml"
   script:
@@ -25,14 +27,6 @@ process checkVersion {
     FASTQC_VER=\$(fastqc --version 2>&1 |  sed -n -e '1p' | grep -Eo [0-9][.]+[0-9]*[.]+[0-9]*)
     echo FastQC: \$FASTQC_VER > fastqc_version.yml
     """
-}
-
-workflow.onComplete{
-    println "Status: ${ workflow.success ? 'OK' : 'failed' }"
-    println """Completed at: $workflow.complete
-               Duration: $workflow.duration
-               WorkDir:  $workflow.workDir
-             """
 }
 
 workflow.onError{

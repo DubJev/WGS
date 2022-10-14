@@ -24,7 +24,7 @@ process HCGVCF {
 process VARCALL {
 
   label "gatk"
-  publishDir params.hcOutputs, mode: 'copy'
+  publishDir params.hc2Outputs, mode: 'copy'
 
   input:
     path ch_fasta
@@ -38,10 +38,11 @@ process VARCALL {
     gatk GenotypeGVCFs -R ${ch_fasta} -V ${gvcf} -O ${sample_name}.vcf
     """
 }
+
 process checkVersion {
 
   label "gatk"
-  publishDir params.hcOutputs, mode: 'copy'
+  publishDir params.verOutputs, mode: 'copy'
   output:
     path "gatk_version.yml"
   script:
@@ -49,14 +50,6 @@ process checkVersion {
     GATK_VER=\$(gatk -version |  sed -n -e '1p' | grep -Eo [0-9][.]+[0-9]*[.]+[0-9]*[.]+[0-9]*)
     echo GATK: \$GATK_VER > gatk_version.yml
     """
-}
-
-workflow.onComplete{
-    println "Status: ${ workflow.success ? 'OK' : 'failed' }"
-    println """Completed at: $workflow.complete
-               Duration: $workflow.duration
-               WorkDir:  $workflow.workDir
-             """
 }
 
 workflow.onError{
