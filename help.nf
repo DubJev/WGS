@@ -29,12 +29,12 @@ Output:
         Variants in VCF file
     
     Default folder for versions of used software /path_to_project/tests/main/Outputs/Versions
-        Versions of Samtools, BWA, GATK and FastQC in yaml files
+        Versions of Samtools, BWA, GATK, VEP and FastQC in yaml files
 
     Default folder for results of FastQC /path_to_project/tests/main/Outputs/FQCheck
         Results for all input FASTQ files
 
     Default folder for auxiliary results /path_to_project/tests/main/Outputs/Temp
-        Results of alignment, deduplication and recalibration
+        Results of alignment, deduplication, recalibration and variants
 =============================================================
-"""//.stripIndent()
+"""

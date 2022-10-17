@@ -24,7 +24,7 @@ process HCGVCF {
 process VARCALL {
 
   label "gatk"
-  publishDir params.hc2Outputs, mode: 'copy'
+  publishDir params.hcOutputs, mode: 'copy'
 
   input:
     path ch_fasta

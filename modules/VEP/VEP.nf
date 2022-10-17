@@ -14,16 +14,13 @@ process VariantPredictor {
   script:
     """
     vep --input_file ${vcfs} --output_file ${sample_name}_variant_effect_output.txt  --species homo_sapiens --database --force_overwrite
-
     """
-        //vep --offline --cache --dir_cache /opt/vep/.vep --input_file /opt/vep/.vep/input/${vcfs} --output_file /opt/vep/.vep/output/${sample_name}_variant_effect_output.txt  
-
 }
 
 process checkVersion {
 
   label "vep"
-  publishDir params.vpOutputs, mode: 'copy'
+  publishDir params.verOutputs, mode: 'copy'
   output:
     path "vep_version.yml"
   script:
@@ -31,14 +28,6 @@ process checkVersion {
     VEP_VER=\$(vep | sed -n -e '10p' | grep -Eo [0-9]+[.]+[A-Za-z0-9]*)
     echo VEP: \$VEP_VER > vep_version.yml
     """
-}
-
-workflow.onComplete{
-    println "Status: ${ workflow.success ? 'OK' : 'failed' }"
-    println """Completed at: $workflow.complete
-               Duration: $workflow.duration
-               WorkDir:  $workflow.workDir
-             """
 }
 
 workflow.onError{

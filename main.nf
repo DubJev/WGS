@@ -6,7 +6,8 @@ include {deDuplicate} from './modules/BWA/bwa.nf'
 include {reCalibrate} from './modules/BWA/bwa.nf'
 include {checkVersion as GATKVersion} from './modules/haplotyper/haplotyper.nf'
 include {HCGVCF; VARCALL} from './modules/haplotyper/haplotyper.nf'
-
+include {checkVersion as VEPVersion} from './modules/VEP/VEP.nf'
+include {VariantPredictor} from './modules/VEP/VEP.nf'
 
 workflow {
 
@@ -20,6 +21,7 @@ workflow {
     FastQCVersion()
     VersionBWASam()
     GATKVersion()
+    VEPVersion()
 
     checkQ(ch_check)
     alignFiles(ch_fasta, ch_fastqs)
@@ -28,6 +30,7 @@ workflow {
     reCalibrate(deDuplicate.out.deduplicate, ch_fasta, ch_vcfs)
     HCGVCF(ch_fasta, reCalibrate.out.recalibrate)
     VARCALL(ch_fasta, HCGVCF.out.gvcfs)
+    VariantPredictor(VARCALL.out.variants)
 
 }
 
