@@ -13,7 +13,7 @@ process VariantPredictor {
     tuple val(sample_name), path("${sample_name}_variant_effect_output.txt"), emit: vareff
   script:
     """
-    vep --input_file ${vcfs} --output_file ${sample_name}_variant_effect_output.txt  --species homo_sapiens --database --force_overwrite
+    vep --input_file ${vcfs} --output_file ${sample_name}_variant_effect_output.txt  --cache --offline --force_overwrite --dir_cache /opt/vep
     """
 }
 

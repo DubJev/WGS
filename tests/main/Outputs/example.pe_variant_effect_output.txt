@@ -1,14 +1,23 @@
 ## ENSEMBL VARIANT EFFECT PREDICTOR v107.0
-## Output produced at 2022-10-17 13:25:53
-## Connected to homo_sapiens_core_107_38 on ensembldb.ensembl.org
-## Using API version 107, DB version 107
-## ensembl version 107.5f39899
+## Output produced at 2022-10-18 12:31:17
+## Using cache in /opt/vep/homo_sapiens/107_GRCh37
+## Using API version 107, DB version ?
 ## ensembl-funcgen version 107.0fbd7d5
 ## ensembl-io version 107.a473894
 ## ensembl-variation version 107.ab78711
-## genebuild version 2014-07
-## assembly version GRCh38.p13
-## gencode version GENCODE 41
+## ensembl version 107.5f39899
+## genebuild version 2011-04
+## COSMIC version 92
+## regbuild version 1.0
+## HGMD-PUBLIC version 20204
+## gencode version GENCODE 19
+## ClinVar version 202012
+## sift version sift5.2.2
+## gnomADe version r2.1
+## dbSNP version 154
+## 1000genomes version phase3
+## polyphen version 2.2.2
+## assembly version GRCh37.p13
 ## Column descriptions:
 ## Uploaded_variation : Identifier of uploaded variant
 ## Location : Location of variant in standard coordinate format (chr:start or chr:start-end)
@@ -28,7 +37,7 @@
 ## DISTANCE : Shortest distance from variant to transcript
 ## STRAND : Strand of the feature (1/-1)
 ## FLAGS : Transcript quality flags
-## VEP command-line: vep --input_file example.pe.vcf --output_file example.pe_variant_effect_output.txt --species homo_sapiens --database --force_overwrite
+## VEP command-line: vep --input_file example.pe.vcf --output_file example.pe_variant_effect_output.txt --cache --offline --force_overwrite --dir_cache /opt/vep
 #Uploaded_variation	Location	Allele	Gene	Feature	Feature_type	Consequence	cDNA_position	CDS_position	Protein_position	Amino_acids	Codons	Existing_variation	Extra
 20_3021_C/T	20:3021	T	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
 20_3022_A/G	20:3022	G	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
