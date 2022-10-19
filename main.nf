@@ -8,6 +8,7 @@ include {checkVersion as GATKVersion} from './modules/haplotyper/haplotyper.nf'
 include {HCGVCF; VARCALL} from './modules/haplotyper/haplotyper.nf'
 include {checkVersion as VEPVersion} from './modules/VEP/VEP.nf'
 include {VariantPredictor} from './modules/VEP/VEP.nf'
+include {ToolVersions} from './modules/ToolVersioning/ToolVersioning.nf'
 
 workflow {
 
@@ -17,6 +18,7 @@ workflow {
     ch_check = Channel.fromPath(params.mainIn+"*.fastq")
     ch_fasta = Channel.fromPath(params.mainIn+"*.fasta")
     ch_vcfs = Channel.fromPath(params.mainIn+"*.vcf.gz")
+    tools = Channel.fromPath(params.verInputs+"*.yml").collect()
 
     FastQCVersion()
     VersionBWASam()
@@ -31,6 +33,7 @@ workflow {
     HCGVCF(ch_fasta, reCalibrate.out.recalibrate)
     VARCALL(ch_fasta, HCGVCF.out.gvcfs)
     VariantPredictor(VARCALL.out.variants)
+    ToolVersions(tools)
 
 }
 
