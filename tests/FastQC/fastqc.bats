@@ -51,7 +51,7 @@ setup() {
             assert_file_not_empty "$file"
             fullname=$(wc -c $file | cut -f2 --delimiter=' ')
             name=$(basename $fullname)
-            bytesize=$(wc -c $file | cut -f1 --delimiter=' ' | cut -f10 --delimiter='/')
+            bytesize=$(wc -c $file | cut -f1 --delimiter=' ')
             assert_file_size_equals ${expected_outdir}/${name} $bytesize
         done
     done

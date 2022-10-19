@@ -3,6 +3,7 @@ nextflow.enable.dsl = 2
 
 process samView {
 
+  label "bwa"
   publishDir params.viewOutputs, mode: 'copy'
   
   input:
@@ -15,18 +16,10 @@ process samView {
     """
     samtools view ${ch_bam} > alignmentsBam
     samtools view -H ${ch_bam} > headerBam
-   
+
     export SAMTOOLS_VER=\$(samtools --version 2>&1 |  sed -n -e '1p' | grep -Eo [0-9][.]*[0-9]*)
     echo samtools: \$SAMTOOLS_VER > samtools_version.yml
     """
-}
-
-workflow.onComplete{
-    println "Status: ${ workflow.success ? 'OK' : 'failed' }"
-    println """Completed at: $workflow.complete
-               Duration: $workflow.duration
-               WorkDir:  $workflow.workDir
-             """
 }
 
 workflow.onError{
@@ -41,6 +34,6 @@ workflow viewSam {
 }
 
 workflow {
-  ch_bam = Channel.fromPath(params.bams)
+  ch_bam = Channel.fromPath(params.bams+"*.bam")
   viewSam(ch_bam)
 }

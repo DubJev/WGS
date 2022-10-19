@@ -1,0 +1,69 @@
+## ENSEMBL VARIANT EFFECT PREDICTOR v107.0
+## Output produced at 2022-10-19 10:05:40
+## Using cache in /opt/vep/homo_sapiens/107_GRCh37
+## Using API version 107, DB version ?
+## ensembl-variation version 107.ab78711
+## ensembl-funcgen version 107.0fbd7d5
+## ensembl-io version 107.a473894
+## ensembl version 107.5f39899
+## sift version sift5.2.2
+## COSMIC version 92
+## 1000genomes version phase3
+## regbuild version 1.0
+## polyphen version 2.2.2
+## dbSNP version 154
+## ClinVar version 202012
+## HGMD-PUBLIC version 20204
+## gencode version GENCODE 19
+## gnomADe version r2.1
+## assembly version GRCh37.p13
+## genebuild version 2011-04
+## Column descriptions:
+## Uploaded_variation : Identifier of uploaded variant
+## Location : Location of variant in standard coordinate format (chr:start or chr:start-end)
+## Allele : The variant allele used to calculate the consequence
+## Gene : Stable ID of affected gene
+## Feature : Stable ID of feature
+## Feature_type : Type of feature - Transcript, RegulatoryFeature or MotifFeature
+## Consequence : Consequence type
+## cDNA_position : Relative position of base pair in cDNA sequence
+## CDS_position : Relative position of base pair in coding sequence
+## Protein_position : Relative position of amino acid in protein
+## Amino_acids : Reference and variant amino acids
+## Codons : Reference and variant codon sequence
+## Existing_variation : Identifier(s) of co-located known variants
+## Extra column keys:
+## IMPACT : Subjective impact classification of consequence type
+## DISTANCE : Shortest distance from variant to transcript
+## STRAND : Strand of the feature (1/-1)
+## FLAGS : Transcript quality flags
+## VEP command-line: vep --input_file example.pe_recalibrated.vcf --output_file example.pe_recalibrated_variant_effect_output.txt --cache --offline --force_overwrite --dir_cache /opt/vep
+#Uploaded_variation	Location	Allele	Gene	Feature	Feature_type	Consequence	cDNA_position	CDS_position	Protein_position	Amino_acids	Codons	Existing_variation	Extra
+20_3021_C/T	20:3021	T	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3022_A/G	20:3022	G	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3025_T/G	20:3025	G	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3036_A/G	20:3036	G	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3044_G/A	20:3044	A	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3050_AG/-	20:3050-3051	-	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3077_-/AAAG	20:3076-3077	AAAG	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3115_A/-	20:3115	-	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3140_A/G	20:3140	G	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3148_C/T	20:3148	T	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3160_A/G	20:3160	G	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3224_T/C	20:3224	C	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3250_AAG/-	20:3250-3252	-	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3255_G/A	20:3255	A	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3264_C/T	20:3264	T	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3335_A/C	20:3335	C	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_3405_A/C	20:3405	C	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_5839_C/A	20:5839	A	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_5877_C/T	20:5877	T	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_5927_-/TTG	20:5926-5927	TTG	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_5936_A/G	20:5936	G	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_5998_A/T	20:5998	T	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_6028_C/T	20:6028	T	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_8238_C/A	20:8238	A	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_8272_C/T	20:8272	T	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_8425_A/G	20:8425	G	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_8432_C/T	20:8432	T	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
+20_8434_G/C	20:8434	C	-	-	-	intergenic_variant	-	-	-	-	-	-	IMPACT=MODIFIER
