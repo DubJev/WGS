@@ -21,7 +21,7 @@ process checkVersion {
   label "bwa"
   publishDir params.verOutputs, mode: 'copy'
   output:
-    path "fastqc_version.yml"
+    path "fastqc_version.yml", emit: fqcversion
   script:
   """
     FASTQC_VER=\$(fastqc --version 2>&1 |  sed -n -e '1p' | grep -Eo [0-9][.]+[0-9]*[.]+[0-9]*)
@@ -44,10 +44,12 @@ workflow checkQ_wf {
 workflow checkVersion_wf {
   main:
     checkVersion()
+  emit:
+    fqcversion = checkVersion.out.fcqversion
 }
 
 workflow {
-  ch_reads = Channel.fromPath(params.qcInputs+"*")
+  ch_reads = Channel.fromPath(params.qcInputs+"*.fastq")
   checkQ_wf(ch_reads)
   checkVersion_wf()
 }

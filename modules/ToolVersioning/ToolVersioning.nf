@@ -1,20 +1,30 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
-process ToolVersions {
+process NFVersion {
 
-  publishDir params.reportOutputs, mode: 'copy'
+  publishDir params.verInputs, mode: 'copy'
   
-  input:
-    path tools
   output:
-    path "Tool_version.yml", emit: version
+    path "Nextflow_version.yml", emit: nfversion
   script:
     """
     export NXTFLW_VER=\$(~/nextflow -version |sed -n -e '3p' | grep -Eo [0-9]+[.][0-9]*[.][0-9]*" build "[0-9]*)
     echo Nextflow: \$NXTFLW_VER > Nextflow_version.yml
-    
-    cat Nextflow_version.yml $tools > Tool_version.yml
+    """
+}
+
+process ToolVersions {
+
+  publishDir params.reportOutputs, mode: 'copy'
+
+  input:
+    path tools
+  output:
+    path "WGS_tool_version.yml"
+  script:
+    """
+    cat WGS_tool_version.yml $tools > WGS_tool_version.yml
     """
 }
 
@@ -22,16 +32,17 @@ workflow.onError{
     println "Stopped: ${workflow.errorMessage}"
 }
 
-workflow ToolVersions_wf {
-  take:
-    tools
+workflow NFVersion_wf {
+
   main:
-    ToolVersions(tools)
+    NFVersion()
   emit:
-    version = ToolVersions.out.version
+    nfversion = NFVersion.out.nfversion
 }
 
+
 workflow {
-  tools = Channel.fromPath(params.verInputs+"*.yml").collect()
-  ToolVersions_wf(tools)
+  NFVersion_wf()
+  tools = Channel.fromPath(params.verInputs+"*.yml").toList()
+  ToolVersions(tools)
 }

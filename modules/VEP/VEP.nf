@@ -22,7 +22,7 @@ process checkVersion {
   label "vep"
   publishDir params.verOutputs, mode: 'copy'
   output:
-    path "vep_version.yml"
+    path "vep_version.yml", emit:vepversion
   script:
   """
     VEP_VER=\$(vep | sed -n -e '10p' | grep -Eo [0-9]+[.]+[A-Za-z0-9]*)
@@ -46,6 +46,8 @@ workflow VariantPredictor_WF {
 workflow checkVersion_wf {
   main:
     checkVersion()
+  emit:
+    vepversion = checkVersion.out.vepversion
 }
 
 workflow {

@@ -44,7 +44,7 @@ process checkVersion {
   label "gatk"
   publishDir params.verOutputs, mode: 'copy'
   output:
-    path "gatk_version.yml"
+    path "gatk_version.yml", emit: gatkversion
   script:
   """
     GATK_VER=\$(gatk -version |  sed -n -e '1p' | grep -Eo [0-9][.]+[0-9]*[.]+[0-9]*[.]+[0-9]*)
@@ -79,6 +79,8 @@ workflow VARCALL_WF {
 workflow checkVersion_wf {
   main:
     checkVersion()
+  emit:
+    gatkversion = checkVersion.out.gatkversion
 }
 
 workflow {

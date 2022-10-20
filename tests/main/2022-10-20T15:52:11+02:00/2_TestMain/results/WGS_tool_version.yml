@@ -1,0 +1,6 @@
+GATK: 4.2.6.1
+VEP: 107.0
+FastQC: 0.11.9
+bwa: 7.17-r1188
+samtools: 1.13
+Nextflow: 22.04.5 build 5708

@@ -16,7 +16,7 @@ process samView {
     """
     samtools view ${ch_bam} > alignmentsBam
     samtools view -H ${ch_bam} > headerBam
-
+   
     export SAMTOOLS_VER=\$(samtools --version 2>&1 |  sed -n -e '1p' | grep -Eo [0-9][.]*[0-9]*)
     echo samtools: \$SAMTOOLS_VER > samtools_version.yml
     """
@@ -31,6 +31,8 @@ workflow viewSam {
     ch_bam
   main:
     samView(ch_bam)
+  emit:
+    version = samView.out.version
 }
 
 workflow {

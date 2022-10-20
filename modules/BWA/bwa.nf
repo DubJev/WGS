@@ -25,8 +25,8 @@ process VersionBWASam {
   
   input:
   output:
-    path "bwa_version.yml"
-    path "samtools_version.yml"
+    path "bwa_version.yml", emit: bwaversion
+    path "samtools_version.yml", emit: samversion
   script:
     """
     BWA_VER="bwa: "\$(echo \$(bwa 2>&1) | sed -n -e '1p' | grep -Eo [0-9][.]*[0-9]*-[A-Za-z]+[0-9]*)
@@ -139,6 +139,9 @@ workflow reCalibrate_wf {
 workflow Version_wf {
   main:
     VersionBWASam()
+  emit:
+    bwaversion = VersionBWASam.out.bwaversion
+    samversion = VersionBWASam.out.samversion
 
 }
 

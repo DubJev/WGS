@@ -41,7 +41,7 @@ setup() {
 
 @test "TestMain" {
     run $HOME/nextflow run $test_dir/main.nf -c $test_dir/configs/main.config \
-        --mainIn=$test_input --verOutputs=$outdir --vpOutputs=$outdir --alignOutputs=$outdir --qcOutputs=$outdir --hcOutputs=$outdir
+        --mainIn=$test_input --verInputs=$outdir --verOutputs=$outdir --vpOutputs=$outdir --alignOutputs=$outdir --qcOutputs=$outdir --hcOutputs=$outdir --reportOutputs=$outdir
     [ "$status" -eq 0 ]
     assert_exists $outdir/
     for dir in $outdir/* 
@@ -55,7 +55,7 @@ setup() {
             bytesize=$(wc -c $file | cut -f1 --delimiter=' ')
             assert_file_size_equals ${expected_outdir}/${name} $bytesize
             pattern="*.zip|*.html"
-            if ![$name =~ $pattern]
+            if ![[$name == $pattern]]
             then
                 run diff -I '^#*' $file ${expected_outdir}/${name}
                 assert_success
