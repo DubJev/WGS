@@ -22,7 +22,7 @@ The next step we begin by calling variants per sample in order to produce a file
 
 VEP (Variant Effect Predictor) predicts the functional effects of genomic variants. VEP needs some input containing variant positions to run. We use cache file to run VEP on the supplied file homo_sapiens_GRCh37.vcf.
 
-![](https://github.com/DubJev/WGS/docs/process.png)
+![](https://github.com/DubJev/WGS/docs/Process.png)
 
 -----------------------------------------------------------------
 Command for running:
