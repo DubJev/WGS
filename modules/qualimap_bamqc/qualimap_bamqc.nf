@@ -1,28 +1,33 @@
 nextflow.enable.dsl=2
 
 process Samtools_sort {
+  label "samtools"
+  tag "${sample_name}"
   publishDir params.qualimap_bamqc_res , mode: 'copy'
 
   input:
-  path(recalbam)
+  tuple val(sample_name), path(recalibrate)
 
   output:
-  path "bamsorted", emit: bamsorted
+  tuple val(sample_name), path("${sample_name}_sorted.bam") , emit: bamsorted
 
   script:
   """
-  samtools sort ${recalbam} > bamsorted
+  samtools sort ${recalibrate} > ${sample_name}_sorted.bam
   """
 }
 
 process Qualimap_bamqc {
-  publishDir params.qualimap_bamqc_res, mode 'copy'
+  label "qualimap"
+  tag "${sample_name}"
+  publishDir params.qualimap_bamqc_res 
   input:
-  path(bamsorted)
-
+  tuple val(sample_name), path(bamsorted)
+  output:
+  path("qualimap_outdir_${sample_name}"), emit: outdir
   script:
   """
-  qualimap bamqc -bam ${bamsorted} -outdir $params.qualimap_bamqc_res
+  qualimap bamqc -bam ${bamsorted} -outdir qualimap_outdir_${sample_name}
   """
 }
 
@@ -36,9 +41,9 @@ workflow.onError {
 }
 workflow Samtools_sort_wf {
   take:
-    recalbam
+    recalibrate
   main:
-    Samtools_sort(recalbam)
+    Samtools_sort(recalibrate)
   emit:
     bamsorted = Samtools_sort.out.bamsorted
 }
@@ -52,7 +57,7 @@ workflow Qualimap_bamqc_wf {
   }
 
   workflow {
-    ch_recalbam = Channel.fromPath(params.recalbam)
+    // ch_recalbam = Channel.fromPath(params.recalbam)
     Samtools_sort(ch_recalbam)
     Qualimap_bamqc(Samtools_sort.out)
   }
